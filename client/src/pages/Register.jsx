@@ -1,6 +1,6 @@
 import { useState } from "react";
-import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function Register() {
 
@@ -13,16 +13,16 @@ export default function Register() {
 
   const [loading, setLoading] = useState(false);
 
-  // Register User
   const registerUser = async (e) => {
+
     e.preventDefault();
 
     try {
 
       setLoading(true);
 
-      await axios.post(
-        "http://localhost:5000/register",
+      await API.post(
+        "/auth/register",
         form
       );
 
@@ -44,105 +44,72 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-5">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#020617] via-[#0f172a] to-[#1e293b] p-5">
 
-      <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8">
+      <div className="bg-white/10 backdrop-blur-xl border border-white/20 w-full max-w-md rounded-3xl shadow-2xl p-8">
 
-        {/* Title */}
-        <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold text-white text-center mb-2">
+          Create Account
+        </h1>
 
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">
-            Create Account
-          </h1>
+        <p className="text-gray-300 text-center mb-8">
+          Register your SaaS account
+        </p>
 
-          <p className="text-gray-500">
-            Register to manage your phone contacts
-          </p>
-
-        </div>
-
-        {/* Form */}
         <form
           onSubmit={registerUser}
           className="space-y-5"
         >
 
-          {/* Email */}
-          <div>
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white outline-none"
+            value={form.email}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                email: e.target.value,
+              })
+            }
+          />
 
-            <label className="block mb-2 text-gray-700 font-medium">
-              Email
-            </label>
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white outline-none"
+            value={form.password}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                password: e.target.value,
+              })
+            }
+          />
 
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
-              value={form.email}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  email: e.target.value,
-                })
-              }
-              required
-            />
-
-          </div>
-
-          {/* Password */}
-          <div>
-
-            <label className="block mb-2 text-gray-700 font-medium">
-              Password
-            </label>
-
-            <input
-              type="password"
-              placeholder="Enter your password"
-              className="w-full p-4 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500"
-              value={form.password}
-              onChange={(e) =>
-                setForm({
-                  ...form,
-                  password: e.target.value,
-                })
-              }
-              required
-            />
-
-          </div>
-
-          {/* Button */}
           <button
-            type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white py-4 rounded-xl font-semibold"
+            className="w-full bg-pink-600 hover:bg-pink-700 text-white py-4 rounded-2xl font-semibold transition"
           >
             {
               loading
-                ? "Creating Account..."
+                ? "Creating..."
                 : "Register"
             }
           </button>
 
         </form>
 
-        {/* Login Link */}
-        <div className="mt-6 text-center">
+        <p className="text-center text-gray-300 mt-6">
+          Already have account?
+        </p>
 
-          <p className="text-gray-600">
-            Already have an account?
-          </p>
-
-          <Link
-            to="/"
-            className="text-indigo-600 font-semibold hover:underline"
-          >
-            Login Here
-          </Link>
-
-        </div>
+        <Link
+          to="/"
+          className="block text-center text-pink-400 font-semibold mt-2"
+        >
+          Login
+        </Link>
 
       </div>
     </div>

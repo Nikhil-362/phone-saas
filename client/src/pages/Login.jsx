@@ -1,45 +1,80 @@
 import { useState } from "react";
-import axios from "axios";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import API from "../services/api";
 
 export default function Login() {
-  const nav = useNavigate();
 
-  const [data, setData] = useState({
+  const navigate = useNavigate();
+
+  const [form, setForm] = useState({
     email: "",
     password: "",
   });
 
-  const login = async () => {
-    // const res = await axios.post(
-    //   "http://localhost:5173/login",
-    //   data
-    // );
+  const [loading, setLoading] = useState(false);
 
-    // localStorage.setItem("token", res.data.token);
+  const loginUser = async (e) => {
 
-    nav("/dashboard");
+    e.preventDefault();
+
+    try {
+
+      setLoading(true);
+
+      const res = await API.post(
+        "/auth/login",
+        form
+      );
+
+      localStorage.setItem(
+        "token",
+        res.data.token
+      );
+
+      alert("Login Successful");
+
+      navigate("/dashboard");
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Invalid Credentials");
+
+    } finally {
+
+      setLoading(false);
+
+    }
   };
 
   return (
-    <div className="h-screen flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#0f172a] via-[#1e293b] to-[#334155] p-5">
 
-      <div className="bg-white p-8 rounded-2xl shadow-xl w-96">
+      <div className="bg-white/10 backdrop-blur-xl border border-white/20 w-full max-w-md rounded-3xl shadow-2xl p-8">
 
-        <h2 className="text-3xl font-bold mb-6 text-center">
-          Login
-        </h2>
+        <h1 className="text-4xl font-bold text-white text-center mb-2">
+          Welcome Back
+        </h1>
 
-        <div className="space-y-4">
+        <p className="text-gray-300 text-center mb-8">
+          Login to your SaaS dashboard
+        </p>
+
+        <form
+          onSubmit={loginUser}
+          className="space-y-5"
+        >
 
           <input
             type="email"
             placeholder="Email"
-            className="input"
-            onChange={(e)=>
-              setData({
-                ...data,
-                email: e.target.value
+            className="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white outline-none"
+            value={form.email}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                email: e.target.value,
               })
             }
           />
@@ -47,27 +82,40 @@ export default function Login() {
           <input
             type="password"
             placeholder="Password"
-            className="input"
-            onChange={(e)=>
-              setData({
-                ...data,
-                password: e.target.value
+            className="w-full p-4 rounded-2xl bg-white/10 border border-white/20 text-white outline-none"
+            value={form.password}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                password: e.target.value,
               })
             }
           />
 
-          <button onClick={login} className="btn w-full">
-            Login
+          <button
+            disabled={loading}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-4 rounded-2xl font-semibold transition"
+          >
+            {
+              loading
+                ? "Logging In..."
+                : "Login"
+            }
           </button>
 
-          <Link
-            to="/register"
-            className="text-indigo-600 block text-center"
-          >
-            Create Account
-          </Link>
+        </form>
 
-        </div>
+        <p className="text-center text-gray-300 mt-6">
+          Don’t have an account?
+        </p>
+
+        <Link
+          to="/register"
+          className="block text-center text-indigo-400 font-semibold mt-2"
+        >
+          Create Account
+        </Link>
+
       </div>
     </div>
   );

@@ -1,90 +1,137 @@
-import Layout from "../layout/Layout";
 import { useState } from "react";
-import axios from "axios";
+import API from "../services/api";
+import Layout from "../layout/Layout";
 
 export default function AddContact() {
 
-  const [form, setForm] = useState({});
+  const [form, setForm] = useState({
+    name: "",
+    mobile: "",
+    description: "",
+    material: "",
+    date: "",
+    discount: "",
+  });
 
-  const save = async () => {
-    await axios.post(
-      "http://localhost:5000/add",
-      form,
-      {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      }
-    );
+  const addContact = async (e) => {
 
-    alert("Contact Saved");
+    e.preventDefault();
+
+    try {
+
+      const token =
+        localStorage.getItem("token");
+
+      await API.post(
+        "/contact",
+        form,
+        {
+          headers: {
+            Authorization: token,
+          },
+        }
+      );
+
+      alert("Contact Added");
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Failed");
+
+    }
   };
 
   return (
     <Layout>
 
-      <div className="bg-white p-6 rounded-2xl shadow max-w-xl">
+      <div className="bg-white rounded-3xl shadow-xl p-8 max-w-3xl mx-auto">
 
-        <h2 className="text-2xl font-bold mb-5">
+        <h1 className="text-4xl font-bold mb-8">
           Add Contact
-        </h2>
+        </h1>
 
-        <div className="space-y-4">
+        <form
+          onSubmit={addContact}
+          className="grid grid-cols-1 md:grid-cols-2 gap-5"
+        >
 
           <input
             placeholder="Name"
-            className="input"
-            onChange={(e)=>
-              setForm({...form,name:e.target.value})
+            className="p-4 border rounded-2xl"
+            onChange={(e) =>
+              setForm({
+                ...form,
+                name: e.target.value,
+              })
             }
           />
 
           <input
             placeholder="Mobile"
-            className="input"
-            onChange={(e)=>
-              setForm({...form,mobile:e.target.value})
-            }
-          />
-
-          <input
-            placeholder="Description"
-            className="input"
-            onChange={(e)=>
-              setForm({...form,description:e.target.value})
+            className="p-4 border rounded-2xl"
+            onChange={(e) =>
+              setForm({
+                ...form,
+                mobile: e.target.value,
+              })
             }
           />
 
           <input
             placeholder="Material"
-            className="input"
-            onChange={(e)=>
-              setForm({...form,material:e.target.value})
-            }
-          />
-
-          <input
-            type="date"
-            className="input"
-            onChange={(e)=>
-              setForm({...form,date:e.target.value})
+            className="p-4 border rounded-2xl"
+            onChange={(e) =>
+              setForm({
+                ...form,
+                material: e.target.value,
+              })
             }
           />
 
           <input
             placeholder="Discount"
-            className="input"
-            onChange={(e)=>
-              setForm({...form,discount:e.target.value})
+            className="p-4 border rounded-2xl"
+            onChange={(e) =>
+              setForm({
+                ...form,
+                discount: e.target.value,
+              })
             }
           />
 
-          <button onClick={save} className="btn w-full">
-            Save Contact
+          <input
+            type="date"
+            className="p-4 border rounded-2xl"
+            onChange={(e) =>
+              setForm({
+                ...form,
+                date: e.target.value,
+              })
+            }
+          />
+
+          <textarea
+            placeholder="Description"
+            className="p-4 border rounded-2xl md:col-span-2"
+            rows="5"
+            onChange={(e) =>
+              setForm({
+                ...form,
+                description: e.target.value,
+              })
+            }
+          />
+
+          <button className="bg-indigo-600 text-white py-4 rounded-2xl md:col-span-2 font-semibold">
+            Add Contact
           </button>
 
-        </div>
+        </form>
+
       </div>
+
     </Layout>
   );
 }

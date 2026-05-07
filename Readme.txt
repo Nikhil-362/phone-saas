@@ -47,5 +47,3 @@ phone-saas/
 │   ├── server.js
 │   └── package.json
 
-reddysanju757_db_user
-d3LWKzTTmJuaSdLH
