@@ -1,0 +1,48 @@
+phone-saas/
+│
+├── client/
+│   ├── src/
+│   │   ├── layout/
+│   │   │   ├── Layout.jsx
+│   │   │   ├── Sidebar.jsx
+│   │   │   └── Topbar.jsx
+│   │   │
+│   │   ├── pages/
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   ├── Dashboard.jsx
+│   │   │   └── AddContact.jsx
+│   │   │
+│   │   ├── services/
+│   │   │   └── api.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│
+├── server/
+│   ├── server.js
+│   └── package.json
+
+
+
+
+phone-saas/
+│
+├── client/
+│
+├── server/
+│   ├── models/
+│   │   ├── User.js
+│   │   └── Contact.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   └── contactRoutes.js
+│   │
+│   ├── middleware/
+│   │   └── auth.js
+│   │
+│   ├── .env
+│   ├── server.js
+│   └── package.json
