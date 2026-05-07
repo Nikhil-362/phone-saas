@@ -1,7 +1,6 @@
 const router = require("express").Router();
 
 const bcrypt = require("bcryptjs");
-
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/User");
@@ -13,24 +12,45 @@ router.post(
 
     try {
 
-      const hashedPassword =
+      const { email, password } =
+        req.body;
+
+      const existingUser =
+        await User.findOne({ email });
+
+      if (existingUser) {
+        return res
+          .status(400)
+          .json({
+            message:
+              "User already exists",
+          });
+      }
+
+      const hash =
         await bcrypt.hash(
-          req.body.password,
+          password,
           10
         );
 
-      const user = new User({
-        email: req.body.email,
-        password: hashedPassword,
+      await User.create({
+        email,
+        password: hash,
       });
 
-      await user.save();
-
-      res.json("Registered");
+      res.status(201).json({
+        message:
+          "Registration Successful",
+      });
 
     } catch (err) {
 
-      res.status(500).json(err);
+      console.log(err);
+
+      res.status(500).json({
+        message:
+          "Server Error",
+      });
 
     }
   }
@@ -43,26 +63,35 @@ router.post(
 
     try {
 
-      const user =
-        await User.findOne({
-          email: req.body.email,
-        });
+      const { email, password } =
+        req.body;
 
-      if (!user)
+      const user =
+        await User.findOne({ email });
+
+      if (!user) {
         return res
           .status(400)
-          .json("User Not Found");
+          .json({
+            message:
+              "User Not Found",
+          });
+      }
 
-      const validPassword =
+      const isMatch =
         await bcrypt.compare(
-          req.body.password,
+          password,
           user.password
         );
 
-      if (!validPassword)
+      if (!isMatch) {
         return res
           .status(400)
-          .json("Wrong Password");
+          .json({
+            message:
+              "Wrong Password",
+          });
+      }
 
       const token = jwt.sign(
         {
@@ -71,14 +100,16 @@ router.post(
         process.env.JWT_SECRET
       );
 
-      res.json({
-        token,
-        user,
-      });
+      res.json({ token });
 
     } catch (err) {
 
-      res.status(500).json(err);
+      console.log(err);
+
+      res.status(500).json({
+        message:
+          "Server Error",
+      });
 
     }
   }
