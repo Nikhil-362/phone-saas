@@ -1,23 +1,31 @@
+require("dotenv").config();
+
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-require("dotenv").config();
-
 const app = express();
 
-/* Middleware */
-// app.use(cors());
-app.use(
-  cors({
-    origin:
-      "https://phone-saas.vercel.app",
-  })
-);
+/* =========================
+   Middleware
+========================= */
 
 app.use(express.json());
 
-/* Routes */
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://phone-saas.vercel.app",
+    ],
+    credentials: true,
+  })
+);
+
+/* =========================
+   Routes
+========================= */
+
 app.use(
   "/api/auth",
   require("./routes/authRoutes")
@@ -28,19 +36,39 @@ app.use(
   require("./routes/contactRoutes")
 );
 
-/* MongoDB */
+/* =========================
+   MongoDB Connection
+========================= */
+
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {
-    console.log("MongoDB Connected");
+    console.log("✅ MongoDB Connected");
   })
   .catch((err) => {
-    console.log(err);
+    console.log(
+      "❌ MongoDB Error:",
+      err.message
+    );
   });
 
-/* Server */
-app.listen(process.env.PORT, () => {
+/* =========================
+   Test Route
+========================= */
+
+app.get("/", (req, res) => {
+  res.send("Phone SaaS API Running");
+});
+
+/* =========================
+   Server
+========================= */
+
+const PORT =
+  process.env.PORT || 5000;
+
+app.listen(PORT, () => {
   console.log(
-    `Server Running On ${process.env.PORT}`
+    `🚀 Server Running On Port ${PORT}`
   );
 });
